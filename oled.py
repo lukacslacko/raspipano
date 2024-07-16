@@ -7,3 +7,6 @@ disp = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c)
 
 disp.fill(0)
 disp.show()
+
+disp.text("Hello", 10, 10, 1)
+disp.show()
