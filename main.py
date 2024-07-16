@@ -1,4 +1,5 @@
-from menu import Menu
+from conn import get_devices
+from menu import Menu, set_status
 from keys import get_key_pressed
 
 ROOT = Menu("RASPIPANO")
@@ -10,6 +11,8 @@ TEST_SPACE = Menu("3 spaces", CONNECT)
 
 current_menu = ROOT
 current_menu.show()
+
+set_status("Hello")
 
 while True:
     key = get_key_pressed()
