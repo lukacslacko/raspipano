@@ -30,16 +30,22 @@ class Menu:
             disp.text("# Back: " + self.parent.title.upper(), 0, 63-8, 1)
         disp.show()
         
-    def handle(self, key):
+    def _handle(self, key):
         if key == "#" and self.parent is not None:
-            parent.enter()
-            return self.parent
+            self.parent.enter()
+            return self.parent, None
         if not key:
-            return self
+            return self, None
         if key and key in "123456789":
             idx = int(key) - 1
             if idx < len(self.items):
-                submenu = self.items[idx]
-                submenu.enter()
-                return submenu
-        return self
+                return None, idx
+        return self, None
+        
+    def handle(self, key):
+        item, idx = self._handle(key)
+        if item:
+            return item
+        submenu = self.items[idx]
+        submenu.enter()
+        return submenu
