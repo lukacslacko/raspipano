@@ -7,18 +7,21 @@ def set_status(status):
     STATUS = status
 
 class Menu:
-    def __init__(self, title, parent=None):
+    def __init__(self, title, parent=None, on_enter=None):
         self.parent = parent
         self.title = title
         self.items = []
         if parent is not None:
             parent.add(self)
+        self.on_enter = on_enter
     
     def add(self, item):
         self.items.append(item)
         
     def enter(self):
         print("Entering ", self.title)
+        if self.on_enter is not None:
+            self.on_enter()
         
     def show(self):
         disp.fill(0)

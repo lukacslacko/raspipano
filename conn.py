@@ -15,6 +15,10 @@ def choose_device(idx):
     global DEVICE_IDX, DEVICES
     DEVICE_IDX = idx
     set_status(DEVICES[DEVICE_IDX][1])
+    
+def send_keys(keys):
+    if DEVICE_IDX is not None:
+        subprocess.run(["kdeconnect-cli", "-d", DEVICES[DEVICE_IDX][0], "-k", keys])
 
 class DeviceMenu(Menu):
     def enter(self):
