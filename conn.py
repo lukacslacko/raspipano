@@ -14,7 +14,7 @@ DEVICE_IDX = None
 def choose_device(idx):
     global DEVICE_IDX, DEVICES
     DEVICE_IDX = idx
-    set_status(DEVICES[DEVICE_IDX][1])
+    set_status("kde", DEVICES[DEVICE_IDX][1])
     
 def send_keys(keys):
     if DEVICE_IDX is not None:
@@ -22,16 +22,18 @@ def send_keys(keys):
 
 class DeviceMenu(Menu):
     def enter(self):
+        print("Device menu enter")
         self.items = []
         global DEVICES, DEVICE_IDX
         DEVICES = get_devices()
         if not DEVICES:
             DEVICE_IDX = None
-            set_status("No devices")
+            set_status("kde", "No kde")
             return
         for device in DEVICES:
             self.add(Menu(device[1]))
         choose_device(0)
+        return True
     
     def handle(self, key):
         item, idx = self._handle(key)

@@ -1,19 +1,22 @@
 from oled import disp
 
-STATUS = "Not connected"
+STATUS = {}
 
-def set_status(status):
+def set_status(k ,v):
     global STATUS
-    STATUS = status
+    STATUS[k] = v
+    
+def get_status():
+    return STATUS.get("kde", "No kde") + " " + STATUS.get("wifi", "No wifi")
 
 class Menu:
     def __init__(self, title, parent=None, on_enter=None):
         self.parent = parent
         self.title = title
         self.items = []
+        self.on_enter = on_enter
         if parent is not None:
             parent.add(self)
-        self.on_enter = on_enter
     
     def add(self, item):
         self.items.append(item)
@@ -22,13 +25,15 @@ class Menu:
         print("Entering ", self.title)
         if self.on_enter is not None:
             self.on_enter()
+            return False
+        return True
         
     def show(self):
         disp.fill(0)
         disp.text(self.title.upper(), 0, 0, 1)
         for idx, item in enumerate(self.items):
             disp.text(str(idx+1) + " " + item.title, 0, 9*(idx+1)+3, 1)
-        disp.text(STATUS, 0, 63-18, 1)
+        disp.text(get_status(), 0, 63-18, 1)
         if self.parent:
             disp.text("# Back: " + self.parent.title.upper(), 0, 63-8, 1)
         disp.show()
@@ -50,5 +55,9 @@ class Menu:
         if item:
             return item
         submenu = self.items[idx]
-        submenu.enter()
-        return submenu
+        if submenu.enter():
+            return submenu
+        return self
+
+    def __str__(self):
+        return "Menu '" + self.title + "'"
