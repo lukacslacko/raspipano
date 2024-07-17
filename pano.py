@@ -14,7 +14,7 @@ time.sleep(3)
 
 factory = PiGPIOFactory()
 
-horiz_servo = AngularServo(14, min_pulse_width=500e-6, max_pulse_width=3600e-6, pin_factory=factory)
+horiz_servo = AngularServo(14, min_pulse_width=540e-6, max_pulse_width=2000e-6, pin_factory=factory)
 horiz_servo.angle = 0
 
 class Range:
@@ -29,17 +29,17 @@ class Range:
         disp.fill(0)
         disp.text("Taking panorama", 0, 0, 1)
         disp.show()
-        step = 0 if self.num == 1 else self.width / (self.num - 1)
-        ang = -self.width/2
+        step = 0 if self.num == 1 else (self.width - .01) / (self.num - 1)
+        ang = -self.width/2+.001
         for i in range(self.num):
             disp.fill(0)
             disp.text("Taking panorama", 0, 0, 1)
-            disp.text(str(i+1+start) + " / " + str(self.num))
+            disp.text(str(i+1+start) + " / " + str(self.num), 0, 10, 1)
             disp.show()
             self.servo.angle = ang
             ang += step
             time.sleep(self.pause)
-            conn.send_keys(" ")
+            send_keys(" ")
             time.sleep(self.pause)
     
     def describe(self):
@@ -48,7 +48,7 @@ class Range:
     def read(self, param):
         def render(value):
             disp.fill(0)
-            disp.text("Set " + self.param + " for " + self.name, 0, 0, 1)
+            disp.text("Set " + param + " for " + self.name, 0, 0, 1)
             disp.text("Enter number then *", 0, 10, 1)
             disp.text(param + ": " + value + "|", 0, 20, 1)
             disp.show()
@@ -73,10 +73,10 @@ class Range:
         
 
 class PanoMenu(Menu):
-    horiz = Range(horiz_servo, 180, 5, 2)
+    horiz = Range(horiz_servo, 180, 5, 2, "horiz")
     
-    def enter():
-        self.items = [Menu(horiz.describe()), Menu("Execute!")]
+    def enter(self):
+        self.items = [Menu(self.horiz.describe()), Menu("Execute!")]
         return True
     
     def handle(self, key):
@@ -84,7 +84,8 @@ class PanoMenu(Menu):
         if item:
             return item
         if idx == 0:
-            horiz.update()
+            self.horiz.update()
+            self.enter()
         if idx == 1:
-            horiz.execute()
+            self.horiz.execute()
         return self

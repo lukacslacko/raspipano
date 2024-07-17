@@ -3,6 +3,7 @@ import time
 from conn import DeviceMenu, send_keys
 from menu import Menu, set_status
 from keys import get_key_pressed
+from pano import PanoMenu
 from wifi import WifiMenu
 
 def say_hello():
@@ -16,7 +17,7 @@ def three_spaces():
 ROOT = Menu("RASPIPANO")
 CONNECT = Menu("Connect", ROOT)
 WIFI = WifiMenu("Wifi", ROOT)
-PANO = Menu("Panorama", ROOT)
+PANO = PanoMenu("Panorama", ROOT)
 LIST_DEVICES = DeviceMenu("Device", CONNECT)
 TEST_HELLO = Menu("Say hello", CONNECT, on_enter=say_hello)
 TEST_SPACE = Menu("3 spaces", CONNECT, on_enter=three_spaces)
